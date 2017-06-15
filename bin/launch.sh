@@ -2,4 +2,6 @@
 echo "*******************************"
 echo "* Activating Missile Launcher *"
 echo "*******************************"
-su -c "sudo -S ./bin/launchStage2.sh" -m hackerspace_admin
+
+# how can we just put the script here instead of a seperate file?
+su -c "sudo -S .launchStage2.sh" -m hackerspace_admin
