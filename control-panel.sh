@@ -3,15 +3,18 @@
 running=1
 n=0
 
-SCRIPT_DIR="/home/$USER/bin"
+# Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
+SCRIPT_DIR="$(pwd)/bin/"
 working_dir=$SCRIPT_DIR
 
 function rundialog() {
   wa=() # define working array to fold content of working_dir (scripts and subdirs)
   wa2=() # wa but with fully qualified dir structure
   i=0
+  echo $(pwd)
   working_dir=$1
   cd $working_dir
+  echo $(pwd)
   ls
 
   while read -r line; do # process file by file
