@@ -3,31 +3,46 @@
 running=1
 n=0
 
+DIALOG_CANCEL=1
+
 # Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
 SCRIPT_DIR="$(pwd)/bin/"
 working_dir=$SCRIPT_DIR
 
 function rundialog() {
-  wa=() # define working array to fold content of working_dir (scripts and subdirs)
+  wa=()  # define working array to fold content of working_dir (scripts and subdirs)
   wa2=() # wa but with fully qualified dir structure
   i=0
   echo $(pwd)
   working_dir=$1
   cd $working_dir
   echo $(pwd)
-  ls
 
   while read -r line; do # process file by file
     let i=$i+1
     wa+=($i "$line")
   done < <(ls -1 $working_dir/) #list current directory in the dialog that follows. ## ${wa[@]} ##
 
-  dialog=$(dialog --title "$working_dir/" --menu "Pick something." 24 80 17 "${wa[@]}" \
-   3>&2 2>&1 1>&3) # show dialog menu
+  dialog=$(dialog --title "$working_dir/" --cancel-label "Quit" --menu "Pick something." 24 80 17 "${wa[@]}" \
+    "Back" ".." 3>&2 2>&1 1>&3) # show dialog menu
+
+  exitstatus=$?
+  case $exitstatus in
+    $DIALOG_CANCEL)
+      echo "Goobye!"
+      exit
+      ;;
+  esac
 
   case $dialog in
 
     ####### 1-999, looks like you're out of luck if you reach over 999 scripts and directories....
+
+    Back)
+      cd ..
+      working_dir=$(pwd)
+      rundialog $working_dir
+      ;;
 
     [1-999])
 
@@ -56,11 +71,13 @@ function rundialog() {
       fi
 
       ;;
+    DIALOG_CANCEL) ;;
   esac
-
-
 
 }
 
-#until [$running=0]; do
-rundialog $working_dir
+#rundialog $working_dir
+#
+until [ $running = 0 ]; do
+  rundialog $working_dir
+done
