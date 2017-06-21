@@ -52,7 +52,7 @@ function rundialog() {
 
       else
 
-        gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; sh $working_dir/${wa[$item]}"
+        gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; bash $working_dir/${wa[$item]};bash"
       fi
 
       ;;
@@ -64,4 +64,3 @@ function rundialog() {
 
 #until [$running=0]; do
 rundialog $working_dir
-#done
