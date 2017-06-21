@@ -2,7 +2,7 @@
 
 running=1
 n=0
-
+# test comment
 DIALOG_CANCEL=1
 
 # Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
