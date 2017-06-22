@@ -5,6 +5,19 @@ n=0
 # test comment
 DIALOG_CANCEL=1
 
+# check if
+
+dialog_check=$(dpkg -l | grep "ii  dialog")
+echo $dialog_check
+if [[ $dialog_check = "" ]]
+then
+  echo "You are missing the `dialog` package to run this script, hackerspace_admin password required to install:"
+su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
+  exit
+fi
+
+
+
 # Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
 SCRIPT_DIR="$(pwd)/bin/"
 working_dir=$SCRIPT_DIR
