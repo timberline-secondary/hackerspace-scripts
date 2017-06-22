@@ -17,11 +17,351 @@ su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
 fi
 
 
-
 # Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
 SCRIPT_DIR="$(pwd)/bin/"
 working_dir=$SCRIPT_DIR
+function coinflip() {
+  clear
+  echo "Flipping a coin..."
+  echo ""
+  echo "         _"
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo "         _"
+  echo ""
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo "         \\"
+  echo ""
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo "         -"
+  echo ""
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo "         /"
+  echo ""
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo "         -"
+  echo ""
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo ""
+  echo "         \\"
+  sleep 0.2
+  clear
+  echo "Flipping a coin..."
+  echo ""
+  echo "         _"
+  sleep 2
+  clear
+  echo "The coin says..."
+  BINR=$(( ( RANDOM % 2 )  + 0 ))
+  if [ $BINR == 1 ]
+  then
+  AYS="HEADS"
+  fi
+  if [ $BINR == 0 ]
+  then
+  AYS="TAILS"
+  fi
+  sleep 2
+  echo "     _____ "
+  echo "    /"$AYS"\\"
+  echo "    \\_____/"
+  echo "    \\|||||/"
+  beep -f $((( RANDOM % 1000 )+ 300)) -d 0 -l 500
+}
+function microwave() {
 
+  clear
+  echo "What would you like to microwave?"
+  echo " "
+  echo "1) Pizza 2) Ramen 3) Hot Dog"
+  echo "4) S'mores       5) Tin Foil"
+  echo " "
+  read -p ">> " ans
+  case $ans in
+    1)
+     clear
+     echo " _________"
+     echo "|.----.|__|"
+     echo "|| <] ||++|"
+     echo "|'----'|__|"
+     sleep 2
+     clear
+     echo " _________"
+     echo "|.----.|3_|"
+     echo "|| <] ||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 0.2
+     clear
+     echo " _________"
+     echo "|.----.|30|"
+     echo "|| <] ||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 1
+     tmr=30
+     for run in {30..10}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|"$tmr"|"
+      echo "|| <] ||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     for run in {9..0}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|0"$tmr"|"
+      echo "|| <] ||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     clear
+     echo " _________"
+     echo "|.----.|00|"
+     echo "|| <] ||++|"
+     echo "|'----'|__|"
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     exit
+     ;&
+
+    2)
+     clear
+     echo " _________"
+     echo "|.----.|__|"
+     echo "||[~~]||++|"
+     echo "|'----'|__|"
+     sleep 2
+     clear
+     echo " _________"
+     echo "|.----.|3_|"
+     echo "||[~~]||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 0.2
+     clear
+     echo " _________"
+     echo "|.----.|30|"
+     echo "||[~~]||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 1
+     tmr=30
+     for run in {30..10}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|"$tmr"|"
+      echo "||[~~]||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     for run in {9..0}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|0"$tmr"|"
+      echo "||[~~]||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     clear
+     echo " _________"
+     echo "|.----.|00|"
+     echo "||[~~]||++|"
+     echo "|'----'|__|"
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     exit
+     ;&
+
+    3)
+     clear
+     echo " _________"
+     echo "|.----.|__|"
+     echo "|| [|]||++|"
+     echo "|'----'|__|"
+     sleep 2
+     clear
+     echo " _________"
+     echo "|.----.|3_|"
+     echo "|| [|]||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 0.2
+     clear
+     echo " _________"
+     echo "|.----.|30|"
+     echo "|| [|]||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 1
+     tmr=30
+     for run in {30..10}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|"$tmr"|"
+      echo "|| [|]||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     for run in {9..0}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|0"$tmr"|"
+      echo "|| [|]||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     clear
+     echo " _________"
+     echo "|.----.|00|"
+     echo "|| [|]||++|"
+     echo "|'----'|__|"
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     exit
+     ;&
+
+    4)
+     clear
+     echo " _________"
+     echo "|.----.|__|"
+     echo "|| == ||++|"
+     echo "|'----'|__|"
+     sleep 2
+     clear
+     echo " _________"
+     echo "|.----.|3_|"
+     echo "|| == ||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 0.2
+     clear
+     echo " _________"
+     echo "|.----.|30|"
+     echo "|| == ||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 1
+     tmr=30
+     for run in {30..10}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|"$tmr"|"
+      echo "|| == ||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     for run in {9..0}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|0"$tmr"|"
+      echo "|| == ||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 1000
+      ((tmr--))
+     done
+     clear
+     echo " _________"
+     echo "|.----.|00|"
+     echo "|| == ||++|"
+     echo "|'----'|__|"
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     beep -f 1000 -l 500
+     sleep 1
+     exit
+     ;&
+
+    5)
+     clear
+     echo " _________"
+     echo "|.----.|__|"
+     echo "||<^><||++|"
+     echo "|'----'|__|"
+     sleep 2
+     clear
+     echo " _________"
+     echo "|.----.|3_|"
+     echo "||<^><||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 0.2
+     clear
+     echo " _________"
+     echo "|.----.|30|"
+     echo "||<^><||++|"
+     echo "|'----'|__|"
+     beep -f 200 -d 0 -l 5 -r 10
+     sleep 1
+     tmr=30
+     for run in {30..25}
+     do
+      clear
+      echo " _________"
+      echo "|.----.|"$tmr"|"
+      echo "||<^><||++|"
+      echo "|'----'|__|"
+      beep -f 50 -l 5 -d 0 -r 100
+      ((tmr--))
+     done
+     clear
+     echo "    .   _"
+     echo "   23vxxas"
+     echo " >553eSD34|"
+     echo "|XFDADSff3|"
+     echo ""
+     echo "Oh no! You blew up the microwave!"
+     freq=1000
+     for run in {1000..200}
+     do
+      beep -f $freq -l 1
+      ((freq--))
+     done
+     exit
+     ;&
+  esac
+}
 function rundialog() {
   wa=()  # define working array to fold content of working_dir (scripts and subdirs)
   wa2=() # wa but with fully qualified dir structure
@@ -89,8 +429,33 @@ function rundialog() {
 
 }
 
+clear
+echo "************************************"
+echo "* WELCOME TO PEDERS CONTROL-PANEL! *"
+echo "* PICK A GAME! OR CONTINUE TO THE  *"
+echo "*      CONTROL-PANEL!              *"
+echo "************************************"
+echo " "
+echo "1) MIRCOWAVE! >:D 2) Coinflip madness! 3) run control-panel"
+
+echo " "
+read -p ">> " ans
+case $ans in
+  1)
+  microwave
+  ;;
+  2)
+coinflip
+  ;;
+  3)
+  until [ $running = 0 ]; do
+     rundialog $working_dir
+  done
+  ;;
+esac
+
 #rundialog $working_dir
-#
-until [ $running = 0 ]; do
-  rundialog $working_dir
-done
+# #
+# until [ $running = 0 ]; do
+#    rundialog $working_dir
+# done
