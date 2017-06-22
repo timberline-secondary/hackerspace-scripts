@@ -5,19 +5,44 @@ FEEDBACK='\033[0;36m'
 #create tmp folder for the image, will be removed in the end.
 
 
+smbclient_check=$(dpkg -l | grep "ii  smbclient")
+echo $smbclient_check
+if [[ $smbclient_check = "" ]]
+then
+  echo "You are missing packages that are required to run this script, hackerspace_admin password required to install:"
+  cd ..
+su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
+  exit
+fi
 
 
+ tmpfolder=$(pwd)/tmpimage
+ if [ -e "$tmpfolder" ]
+ then
+rm -r ./tmpimage
+fi
 mkdir ./tmpimage
 cd ./tmpimage
 #get inputs from uploader
 echo -e "${COLOR}Paste your image link(${WARNING}must be https link${COLOR}), or specify exact local directory(${WARNING}must begin with "/"${COLOR}):${RESTORE}"
 read image_link
+#chane "~" to "/home/$USER"
+if [[ ${image_link:0:2} == "~/" ]]
+then
+linkdir="${image_link#'~'}"
+linkdir=/home/$USER$image_link
+fi
 #give feedback based on what is submitted by user, a file, or link.
-if [[ ${image_link:0:5} == "https" ]]
+if [[ ${image_link:0:4} == "http" ]]
 then
   echo -e "${FEEDBACK} IMAGE LINK DETECTED! ${RESTORE}"
 fi
+
 if [[ ${image_link:0:1} == "/" ]]
+then
+  echo -e "${FEEDBACK} FILE DETECTED! ${RESTORE}"
+fi
+if [[ ${image_link:0:2} == "~/" ]]
 then
   echo -e "${FEEDBACK} FILE DETECTED! ${RESTORE}"
 fi
@@ -36,11 +61,15 @@ read tv
 #declare filename format
 filename="${student_number}.z.${image_name}"
 #Get the image from online, or copy local file to local directory.
-if [[ ${image_link:0:5} == "https" ]]
+if [[ ${image_link:0:4} == "http" ]]
 then
   wget -O $image_name.$extension $image_link
 fi
 if [[ ${image_link:0:1} == "/" ]]
+then
+  cp $image_link ./$image_name.$extension
+fi
+if [[ ${image_link:0:1} == "~/" ]]
 then
   cp $image_link ./$image_name.$extension
 fi
