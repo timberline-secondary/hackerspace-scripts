@@ -7,7 +7,7 @@ echo "Paste the link or directory to the mp3 file you want to add"
 read linkdir
 echo "What number do you want to give it?"
 read filename
-
+#checks if contains "~/" and if it does, convert "~" to "/home/$USER"
 if [[ ${linkdir:0:2} == "~/" ]]
 then
 linkdir="${linkdir#'~'}"
