@@ -2,16 +2,29 @@
 
 running=1
 n=0
-chmod +x ".dialoginstall.sh"
+
 DIALOG_CANCEL=1
-
-# check if
-
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo $DIR
+cd $DIR
+chmod +x "./bootstrap.sh"
+bash bootstrap.sh
+# # check if
+beep_check=$(dpkg -l | grep "ii  beep")
+echo $beep_check
+if [[ $beep_check = "" ]]
+then
+  chmod +x ".dialoginstall.sh"
+  echo "You are missing the packages to run this script, hackerspace_admin password required to install:"
+su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
+  exit
+fi
 dialog_check=$(dpkg -l | grep "ii  dialog")
 echo $dialog_check
 if [[ $dialog_check = "" ]]
 then
-  echo "You are missing the `dialog` package to run this script, hackerspace_admin password required to install:"
+  chmod +x ".dialoginstall.sh"
+  echo "You are missing the packages to run this script, hackerspace_admin password required to install:"
 su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
   exit
 fi
