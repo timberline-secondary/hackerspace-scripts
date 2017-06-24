@@ -1,426 +1,43 @@
 #!/bin/bash
-
-running=1
-n=0
+#title           :control-panel
+#description     :A dialog that allows for easy use of scripts within the co-located bin/
+#author		       :Peder Skaaravik and Tylere Couture
+#date            :Jun-2017
+#version         :0.6
+#notes		       :On first run, bootstrap.sh will add this script's directory to the user's PATH so it can be run as a command, will also attempt to install required packages
 
 DIALOG_CANCEL=1
+
+# If the script is run as a command, pwd may not be the script location, so cd to the script's location
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo $DIR
 cd $DIR
+
+# Check to make sure requirements to run this script are met.  Maybe other helpful stuff too.
 chmod +x "./bootstrap.sh"
 bash bootstrap.sh
-# # check if
-beep_check=$(dpkg -l | grep "ii  beep")
-echo $beep_check
-if [[ $beep_check = "" ]]
-then
-  chmod +x ".dialoginstall.sh"
-  echo "You are missing the packages to run this script, hackerspace_admin password required to install:"
-su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
-  exit
-fi
-dialog_check=$(dpkg -l | grep "ii  dialog")
-echo $dialog_check
-if [[ $dialog_check = "" ]]
-then
-  chmod +x ".dialoginstall.sh"
-  echo "You are missing the packages to run this script, hackerspace_admin password required to install:"
-su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
-  exit
-fi
 
+beep_check=$(dpkg -l | grep "ii  beep")
+dialog_check=$(dpkg -l | grep "ii  dialog")
+if [[ $dialog_check = "" ]] || [[ ]]$beep_check = "" ]]
+then
+  chmod +x ".dialoginstall.sh"
+  echo "You are missing some packages needed for this script."
+  echo "I'll attempt to install them if you give me the hackerspace_admin password:"
+  su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
+  exit
+fi
 
 # Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
 SCRIPT_DIR="$(pwd)/bin/"
 working_dir=$SCRIPT_DIR
-#old functions for minigames, now seperate scripts.
-# function coinflip() {
-#   clear
-#   echo "Flipping a coin..."
-#   echo ""
-#   echo "         _"
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo "         _"
-#   echo ""
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo "         \\"
-#   echo ""
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo "         -"
-#   echo ""
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo "         /"
-#   echo ""
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo "         -"
-#   echo ""
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo ""
-#   echo "         \\"
-#   sleep 0.2
-#   clear
-#   echo "Flipping a coin..."
-#   echo ""
-#   echo "         _"
-#   sleep 2
-#   clear
-#   echo "The coin says..."
-#   BINR=$(( ( RANDOM % 2 )  + 0 ))
-#   if [ $BINR == 1 ]
-#   then
-#   AYS="HEADS"
-#   fi
-#   if [ $BINR == 0 ]
-#   then
-#   AYS="TAILS"
-#   fi
-#   sleep 2
-#   echo "     _____ "
-#   echo "    /"$AYS"\\"
-#   echo "    \\_____/"
-#   echo "    \\|||||/"
-#   beep -f $((( RANDOM % 1000 )+ 300)) -d 0 -l 500
-#   sleep 1.5
-#   echo "Press "b" to return to control-panel"
-#   read -rsn1 input
-# if ["$input" = "b"]; then
-#     echo "Better luck next time"
-# fi
-# }
-# function microwave() {
-#
-#   clear
-#   echo "What would you like to microwave?"
-#   echo " "
-#   echo "1) Pizza 2) Ramen 3) Hot Dog"
-#   echo "4) S'mores       5) Tin Foil"
-#   echo " "
-#   read -p ">> " ans
-#   case $ans in
-#     1)
-#      clear
-#      echo " _________"
-#      echo "|.----.|__|"
-#      echo "|| <] ||++|"
-#      echo "|'----'|__|"
-#      sleep 2
-#      clear
-#      echo " _________"
-#      echo "|.----.|3_|"
-#      echo "|| <] ||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 0.2
-#      clear
-#      echo " _________"
-#      echo "|.----.|30|"
-#      echo "|| <] ||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 1
-#      tmr=30
-#      for run in {30..10}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|"$tmr"|"
-#       echo "|| <] ||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      for run in {9..0}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|0"$tmr"|"
-#       echo "|| <] ||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      clear
-#      echo " _________"
-#      echo "|.----.|00|"
-#      echo "|| <] ||++|"
-#      echo "|'----'|__|"
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      sleep 1.5
-#      echo "Press "b" to return to control-panel"
-#      read -rsn1 input
-#    if ["$input" = "b"]; then
-#        echo "Better luck next time"
-#    fi
-#      exit
-#      ;&
-#
-#     2)
-#      clear
-#      echo " _________"
-#      echo "|.----.|__|"
-#      echo "||[~~]||++|"
-#      echo "|'----'|__|"
-#      sleep 2
-#      clear
-#      echo " _________"
-#      echo "|.----.|3_|"
-#      echo "||[~~]||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 0.2
-#      clear
-#      echo " _________"
-#      echo "|.----.|30|"
-#      echo "||[~~]||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 1
-#      tmr=30
-#      for run in {30..10}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|"$tmr"|"
-#       echo "||[~~]||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      for run in {9..0}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|0"$tmr"|"
-#       echo "||[~~]||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      clear
-#      echo " _________"
-#      echo "|.----.|00|"
-#      echo "||[~~]||++|"
-#      echo "|'----'|__|"
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      exit
-#      ;&
-#      sleep 1.5
-#      echo "Press "b" to return to control-panel"
-#      read -rsn1 input
-#    if ["$input" = "b"]; then
-#        echo "Better luck next time"
-#    fi
-#
-#     3)
-#      clear
-#      echo " _________"
-#      echo "|.----.|__|"
-#      echo "|| [|]||++|"
-#      echo "|'----'|__|"
-#      sleep 2
-#      clear
-#      echo " _________"
-#      echo "|.----.|3_|"
-#      echo "|| [|]||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 0.2
-#      clear
-#      echo " _________"
-#      echo "|.----.|30|"
-#      echo "|| [|]||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 1
-#      tmr=30
-#      for run in {30..10}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|"$tmr"|"
-#       echo "|| [|]||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      for run in {9..0}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|0"$tmr"|"
-#       echo "|| [|]||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      clear
-#      echo " _________"
-#      echo "|.----.|00|"
-#      echo "|| [|]||++|"
-#      echo "|'----'|__|"
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      exit
-#      ;&
-#      sleep 1.5
-#      echo "Press "b" to return to control-panel"
-#      read -rsn1 input
-#    if ["$input" = "b"]; then
-#        echo "Better luck next time"
-#    fi
-#
-#     4)
-#      clear
-#      echo " _________"
-#      echo "|.----.|__|"
-#      echo "|| == ||++|"
-#      echo "|'----'|__|"
-#      sleep 2
-#      clear
-#      echo " _________"
-#      echo "|.----.|3_|"
-#      echo "|| == ||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 0.2
-#      clear
-#      echo " _________"
-#      echo "|.----.|30|"
-#      echo "|| == ||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 1
-#      tmr=30
-#      for run in {30..10}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|"$tmr"|"
-#       echo "|| == ||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      for run in {9..0}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|0"$tmr"|"
-#       echo "|| == ||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 1000
-#       ((tmr--))
-#      done
-#      clear
-#      echo " _________"
-#      echo "|.----.|00|"
-#      echo "|| == ||++|"
-#      echo "|'----'|__|"
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      beep -f 1000 -l 500
-#      sleep 1
-#      exit
-#      ;&
-#      sleep 1.5
-#      echo "Press "b" to return to control-panel"
-#      read -rsn1 input
-#    if ["$input" = "b"]; then
-#        echo "Better luck next time"
-#    fi
-#
-#     5)
-#      clear
-#      echo " _________"
-#      echo "|.----.|__|"
-#      echo "||<^><||++|"
-#      echo "|'----'|__|"
-#      sleep 2
-#      clear
-#      echo " _________"
-#      echo "|.----.|3_|"
-#      echo "||<^><||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 0.2
-#      clear
-#      echo " _________"
-#      echo "|.----.|30|"
-#      echo "||<^><||++|"
-#      echo "|'----'|__|"
-#      beep -f 200 -d 0 -l 5 -r 10
-#      sleep 1
-#      tmr=30
-#      for run in {30..25}
-#      do
-#       clear
-#       echo " _________"
-#       echo "|.----.|"$tmr"|"
-#       echo "||<^><||++|"
-#       echo "|'----'|__|"
-#       beep -f 50 -l 5 -d 0 -r 100
-#       ((tmr--))
-#      done
-#      clear
-#      echo "    .   _"
-#      echo "   23vxxas"
-#      echo " >553eSD34|"
-#      echo "|XFDADSff3|"
-#      echo ""
-#      echo "Oh no! You blew up the microwave!"
-#      freq=1000
-#      for run in {1000..200}
-#      do
-#       beep -f $freq -l 1
-#       ((freq--))
-#      done
-#      sleep 1.5
-#      echo "Press "b" to return to control-panel"
-#      read -rsn1 input
-#    if ["$input" = "b"]; then
-#        echo "Better luck next time"
-#    fi
-#      exit
-#      ;&
-#   esac
-# }
+
 function rundialog() {
-  wa=()  # define working array to fold content of working_dir (scripts and subdirs)
-  wa2=() # wa but with fully qualified dir structure
-  i=0
-  echo $(pwd)
   working_dir=$1
   cd $working_dir
-  echo $(pwd)
 
+  wa=()  # define working array to fold content of working_dir (scripts and subdirs)
+
+  i=0
   while read -r line; do # process file by file
     let i=$i+1
     wa+=($i "$line")
@@ -433,72 +50,51 @@ function rundialog() {
   case $exitstatus in
     $DIALOG_CANCEL)
       echo "Goobye!"
+      clear
       exit
       ;;
   esac
 
   case $dialog in
-
-    ####### 1-999, looks like you're out of luck if you reach over 999 scripts and directories....
-    Microwave)
-    microwave
-    ;;
-    Coinflip)
-    coinflip
-    ;;
     Back)
       cd ..
       working_dir=$(pwd)
       rundialog $working_dir
       ;;
 
+    # 1-999, looks like you're out of luck if you reach over 999 scripts and directories....
     [1-999])
 
+      # this dialogue will happen after clicking enter on desired stuff ^
       item=$(($dialog*2 - 1))
 
-      ######## this dialogue will happen after clicking enter on desired stuff ^
-
-      ######## if its a directory, cd into direcotry, if not, then run the .sh file.
+      #if its a directory, cd into direcotry, if not, then run the .sh file.
       if
         [ -d "${wa[$item]}" ]
       then
         echo "$working_dir/${wa[$item]}"
         rundialog $working_dir/${wa[$item]}
-        # cd ./${wa[$item]}
-        # while read -r line; do # process file by file
-        #   let n=$n+1
-        #   w+=($n "$line")
-        # done < <(ls -1 ./)
-        #
-        # dir=$(dialog --title "New directory" --menu "Choose something" 24 80 17 "${w[@]}" \
-        #   3>&2 2>&1 1>&3)
-
       else
-
         gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; bash $working_dir/${wa[$item]};bash"
       fi
-
       ;;
-    DIALOG_CANCEL) ;;
   esac
 
 }
 
 clear
-echo "***************************************"
-echo "*                                     *"
-echo "*   WELCOME TO PEDERS CONTROL-PANEL!  *"
-echo "*                                     *"
-echo "***************************************"
+echo "************************************************"
+echo "*                                              *"
+echo "*   WELCOME TO THE HACKERSPACE CONTROL-PANEL!  *"
+echo "*   Created by: Peder Skaaravik.               *"     
+echo "*   Grad: 2017 because I'm too cool to hang out with you guys anymore even though I should be here till 2018."
+echo "*                                              *"
+echo "************************************************"
 echo " "
-sleep 0.5
+sleep 0.8
 
-until [ $running = 0 ]; do
+# Infinite loop.  Script will exit when user chooses quit from the menu.
+while true
+do
    rundialog $working_dir
-
 done
-#rundialog $working_dir
-# #
-# until [ $running = 0 ]; do
-#    rundialog $working_dir
-# done
