@@ -17,7 +17,7 @@ fi
 
 if [[ ${linkdir:0:1} == "/" ]] || [[ ${linkdir:0:2} == "~/" ]]
 then
-  echo "Sending local file here@here"
+  echo "Sending local file here@here.  Default password is: raspberry"
   scp $linkdir ${USERNAME}@${HOSTNAME}:$LOCATION/$filename.mp3
 else
   SCRIPT="cd $LOCATION; wget -O $filename.mp3 $linkdir"
