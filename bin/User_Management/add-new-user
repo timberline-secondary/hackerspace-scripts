@@ -6,10 +6,9 @@ echo "*******************************"
 
 echo "Username (student number): "
 read username
-echo "First name: "
+echo "First name (please use ALL CAPS): "
 read firstname
-echo "Last name: "
+echo "Last name (please use ALL CAPS): "
 read lastname
-echo -e "\n"
 
-ssh -t hackerspace_admin@lannister "cd hs-ldap && sudo ./hs-ldapadduser.sh $username $firstname $lastname"
+ssh -t hackerspace_admin@lannister "cd hs-ldap && sudo ./hs-ldapadduser.sh \"$username\" \"$firstname\" \"$lastname\""
