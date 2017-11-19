@@ -8,8 +8,6 @@ USERNAME = "pi" #insert username that you log onto the host with.
 HOSTNAME = "192.168.0.10"  #insert host name
 LOCATION = "/home/pi/media/THEMES" #file destination
 linkdir = ""
-yesChoice = ['yes', 'y']
-noChoice = ['no', 'n']
 
 while True:
     # declare mp3 directory or direct download link
