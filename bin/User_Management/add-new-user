@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "*******************************"
+echo "* ADD NEW USER                *"
+echo "*******************************"
+
+echo "Username (student number): "
+read username
+echo "First name (please use ALL CAPS): "
+read firstname
+echo "Last name (please use ALL CAPS): "
+read lastname
+
+ssh -t hackerspace_admin@lannister "cd hs-ldap && sudo ./hs-ldapadduser.sh \"$username\" \"$firstname\" \"$lastname\""

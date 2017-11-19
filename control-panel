@@ -1,0 +1,100 @@
+#!/bin/bash
+#title           :control-panel
+#description     :A dialog that allows for easy use of scripts within the co-located bin/
+#author		       :Peder Skaaravik and Tylere Couture
+#date            :Jun-2017
+#version         :0.6
+#notes		       :On first run, bootstrap.sh will add this script's directory to the user's PATH so it can be run as a command, will also attempt to install required packages
+
+DIALOG_CANCEL=1
+
+# If the script is run as a command, pwd may not be the script location, so cd to the script's location
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
+# Check to make sure requirements to run this script are met.  Maybe other helpful stuff too.
+chmod +x "./bootstrap.sh"
+bash bootstrap.sh
+
+beep_check=$(dpkg -l | grep "ii  beep")
+dialog_check=$(dpkg -l | grep "ii  dialog")
+if [[ $dialog_check = "" ]] || [[ ]]$beep_check = "" ]]
+then
+  chmod +x ".dialoginstall.sh"
+  echo "You are missing some packages needed for this script."
+  echo "I'll attempt to install them if you give me the hackerspace_admin password:"
+  su -c "sudo -S ./.dialoginstall.sh" -m hackerspace_admin
+  exit
+fi
+
+# Scripts bin dir is relative to the control-panel.sh (pwd=present working directory)
+SCRIPT_DIR="$(pwd)/bin/"
+working_dir=$SCRIPT_DIR
+
+function rundialog() {
+  working_dir=$1
+  cd $working_dir
+
+  wa=()  # define working array to fold content of working_dir (scripts and subdirs)
+
+  i=0
+  while read -r line; do # process file by file
+    let i=$i+1
+    wa+=($i "$line")
+  done < <(ls -1 $working_dir) #list current directory in the dialog that follows. ## ${wa[@]} ##
+
+  dialog=$(dialog --title "$working_dir" --cancel-label "Quit" --menu "Pick something." 24 80 17 "${wa[@]}" \
+    "Back" ".." 3>&2 2>&1 1>&3) # show dialog menu
+
+  exitstatus=$?
+  case $exitstatus in
+    $DIALOG_CANCEL)
+      echo "Goobye!"
+      clear
+      exit
+      ;;
+  esac
+
+  case $dialog in
+    Back)
+      cd ..
+      working_dir=$(pwd)
+      rundialog $working_dir
+      ;;
+
+    # 1-999, looks like you're out of luck if you reach over 999 scripts and directories....
+    [1-999])
+
+      # this dialogue will happen after clicking enter on desired stuff ^
+      item=$(($dialog*2 - 1))
+
+      #if its a directory, cd into direcotry, if not, then run the .sh file.
+      if
+        [ -d "${wa[$item]}" ]
+      then
+        echo "$working_dir/${wa[$item]}"
+        rundialog $working_dir/${wa[$item]}
+      else
+        gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; bash $working_dir/${wa[$item]};bash"
+      fi
+      ;;
+  esac
+
+}
+
+clear
+echo "************************************************"
+echo "*                                              *"
+echo "*   WELCOME TO THE HACKERSPACE CONTROL-PANEL!  *"
+echo "*   Created by: Peder Skaaravik.               *"     
+echo "*   Grad: 2017 because I'm too cool to hang out with you guys anymore even though I should be here till 2018."
+echo "*                                              *"
+echo "************************************************"
+echo " "
+sleep 0.8
+
+# Infinite loop.  Script will exit when user chooses quit from the menu.
+while true
+do
+   rundialog $working_dir
+done
