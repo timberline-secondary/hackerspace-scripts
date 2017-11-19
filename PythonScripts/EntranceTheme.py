@@ -16,13 +16,19 @@ while True:
     linkdir = linkdir.replace('\n', '', 1)
 
     # declare new file name.
-    print("What number do you want to give it?")
+    print("What number do you want to give it? (press [ENTER] to keep orriginal File name)")
     filename = sys.stdin.readline()
     filename = filename.replace('\n', '', 1)
 
     #replace with propper format if user uses "~/"
     if linkdir[0:2] == "~/":
         linkdir = linkdir.replace("~/", "/home/"+ getpass.getuser() +"/", 1)
+
+    # keeps original file name if filename is left blank
+    if filename == '':
+        filename = os.path.basename(linkdir)
+        print ("File name set to : " + filename)
+    else:
         filename = filename + ".mp3"
 
     # send to pi
