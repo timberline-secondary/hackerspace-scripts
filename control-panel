@@ -69,13 +69,15 @@ function rundialog() {
       item=$(($dialog*2 - 1))
 
       #if its a directory, cd into direcotry, if not, then run the .sh file.
-      if
-        [ -d "${wa[$item]}" ]
+      if [ -d "${wa[$item]}" ]
       then
         echo "$working_dir/${wa[$item]}"
         rundialog $working_dir/${wa[$item]}
+      elif [ ${wa[item]: -2} -eq "sh" ]
+        then
+          gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; bash $working_dir/${wa[$item]};bash"
       else
-        gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; bash $working_dir/${wa[$item]};bash"
+          gnome-terminal -x bash -c "echo -e '# Running ${wa[$item]} # \n'; python $working_dir/${wa[$item]};bash"
       fi
       ;;
   esac
