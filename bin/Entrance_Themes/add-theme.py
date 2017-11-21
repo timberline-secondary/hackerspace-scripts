@@ -1,3 +1,11 @@
+#########################################
+#
+# Author: Peder Skaaravik / Tylere
+# Date: November 20, 2017
+# Dev. Stage: undergoing developement
+#
+#########################################
+
 
 import os
 import getpass
