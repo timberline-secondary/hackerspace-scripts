@@ -10,6 +10,7 @@ import os
 from Tkinter import *
 from time import sleep
 
+#Tylere is "helpfull"
 
 
 print("\n")
@@ -18,7 +19,7 @@ print("  * WELCOME TO QUICK ACCESS *  ")
 print("  *                         *  ")
 print("  *   THE NEW SCRIPT BUDDY  *  ")
 print("  ***************************  ")
-sleep(2)
+sleep(1)
 root = Tk()
 frame = Frame(root)
 frame.grid()
