@@ -7,9 +7,8 @@
 #########################################
 
 import os
-from Tkinter import *
+from tkinter import *
 from time import sleep
-
 
 
 print("\n")
@@ -30,13 +29,13 @@ cwd = os.getcwd()
 
 class Control:
     buttons = []
-    def openFile(self,b_ID):
+
+    def openFile(self, b_ID):
          print(b_ID)
          if b_ID[-3:] == ".py":
-            os.system("gnome-terminal -x bash -c \"echo -e \'#Running#\n\'; python " + b_ID + ";bash\"")
+            os.system("gnome-terminal -x bash -c \"echo -e \'#Running#\n\'; python3 " + b_ID + ";bash\"")
          else:
             os.system("gnome-terminal -x bash -c \"echo -e \'#Running#\n\'; bash " + b_ID + ";bash\"")
-
 
     def gen(self, button_count, file_index):
 
@@ -61,6 +60,6 @@ class Control:
                     self.buttons[button_count].grid(row=button_count+1)
 
 x = Control()
-x.gen(-1,-1)
+x.gen(-1, -1)
 root.mainloop()
 

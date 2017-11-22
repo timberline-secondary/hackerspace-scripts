@@ -11,10 +11,6 @@ import os
 import getpass
 import signal
 
-
-
-#comment number two
-
 USERNAME = "pi"
 HOSTNAME = "pi-themes"
 LOCATION = "/media/THEMES"  # mp3 file destination
@@ -52,5 +48,6 @@ while True:
 
     os.system(bash_command)
 
+# Close the terminal window
 # https://stackoverflow.com/questions/34389322/how-to-exit-linux-terminal-using-python-script
 os.kill(os.getppid(), signal.SIGHUP)
