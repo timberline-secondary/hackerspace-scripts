@@ -5,7 +5,7 @@ import pwd
 import socket
 import os
 
-ADMIN_USER = "admin_username_here"
+ADMIN_USER = "hackerspace_admin"
 ADMIN_UID = pwd.getpwnam(ADMIN_USER).pw_uid
 RANGE_START = 1
 RANGE_END = 2
@@ -20,7 +20,6 @@ def ssh_fingerprint_changed(node):
     changed = False
     cmd = ["ssh", "-q", ADMIN_USER + "@" + node, "exit"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
-    print("Checking for fingerprint changes")
     for line in proc.stdout:  # loop on lines
         print("in for loop")
         if b"Offending key" in line:
@@ -91,43 +90,56 @@ def add_ssh_fingerprints_to_client(fingerprints):
     print("New host fingerprint added")
 
 
+def repair_fingerprints(hostname, force=False):
+    print("\n\n######################################################")
+    print("HOSTNAME: " + hostname)
+    # Is the node reachable?
+    try:
+        ip = socket.gethostbyname(hostname)
+    except OSError as e:
+        print("Skipping: " + hostname)
+        print(e)
+        return
+    print("IP: " + ip)
+
+    # Do we already have a fingerprint for the node?
+    keys_exist = ssh_fingerprint_exists(hostname)
+    print("KEYS EXIST: " + str(keys_exist))
+
+    # Has the fingerprint changed? (happens if the node was reimaged)
+    keys_changed = True if force else ssh_fingerprint_changed(hostname)
+
+    if keys_changed:
+        # if so, remove the client's record.  There may be multiple, so continue until all are removed
+        print("KEYS CHANGED or FORCE REFRESH: Attempting to remove the old fingerprints...")
+        remove_ssh_fingerprint(hostname)
+        remove_ssh_fingerprint(ip)
+
+    if not keys_exist or keys_changed:
+        keys = get_ssh_fingerprints(hostname)
+        print("KEYS: Adding new fingerprints")
+        add_ssh_fingerprints_to_client(keys)
+
+    else:
+        print("Public key fingerprint match. Good!")
+
+
 if __name__ == "__main__":  # if this script is run form the command line
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--node", type=int, help="The node's ip or hostname")
+    parser.add_argument("-n", "--number", type=int, help="Number: to repair a specific student node: tbl-hackerspace-#-s")
+    parser.add_argument("--hostname", help="The node's ip or hostname")
+    parser.add_argument("-f", "--force", action="store_true", help="Don't check for problems, just force reset of fingerprints")
     args = parser.parse_args()
 
-    start_node = args.node if args.node else RANGE_START
-    end_node = args.node if args.node else RANGE_END
+    start_node = args.number if args.number else RANGE_START
+    end_node = args.number if args.number else RANGE_END
+    force = args.force
+    hostname = args.hostname
 
-    print(ADMIN_USER)
+    if hostname:
+        repair_fingerprints(hostname, force)
+    else:
+        for x in range(start_node, end_node+1):
+            hostname = "tbl-hackerspace-{x}-s".format(**locals())
+            repair_fingerprints(hostname, force)
 
-    for x in range(start_node, end_node+1):
-        print("\n\n######################################################")
-        hostname = "tbl-hackerspace-{x}-s".format(**locals())
-        print("HOSTNAME: " + hostname)
-
-        # Is the node reachable?
-        try:
-            ip = socket.gethostbyname(hostname)
-        except OSError as e:
-            print("Skipping: " + hostname)
-            print(e)
-            continue
-        print("IP: " + ip)
-
-        # Do we already have a fingerprint for the node?
-        keys_exist = ssh_fingerprint_exists(hostname)
-        print("KEYS EXIST: " + str(keys_exist))
-        if not keys_exist:
-            keys = get_ssh_fingerprints(hostname)
-            print("KEYS: Adding new fingerprints")
-            add_ssh_fingerprints_to_client(keys)
-
-        # Has the fingerprint changed? (happens if the node was reimaged)
-        if ssh_fingerprint_changed(hostname):
-            # if so, remove the client's record.  There may be multiple, so continue until all are removed
-            print("KEYS CHANGED: Attempting to remove the old fingerprints...")
-            remove_ssh_fingerprint(hostname)
-            remove_ssh_fingerprint(ip)
-        else:
-            print("Public key fingerprint match. Good!")
